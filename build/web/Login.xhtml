@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Login</title>
+    <style>
+        .login-panel {
+            width: 350px;
+            margin: 0 auto;
+        }
+    </style>
+</h:head>
+<h:body>
+    <h:form id="loginForm">
+    <p:growl id="msg" showDetail="true" life="4000" />
+        <p:panel header="Login" styleClass="login-panel">
+            <h:panelGrid columns="2">
+                <h:outputLabel for="username" value="Usuario:" />
+                <p:inputText id="username" value="#{userBean.usuarios.user}"  required="true" />
+                
+                <h:outputLabel for="password" value="Password:" />
+                <p:password id="password" value="#{userBean.usuarios.password}"  required="true" />
+            </h:panelGrid>
+            <p:commandButton value="Login"  action="#{userBean.login()}" ajax="false" />
+        </p:panel>
+    </h:form>
+</h:body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>Registrar Lector por Blog</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:growl id="msg" showDetail="true" life="4000" />
+            <p:fieldset legend="Asociar Lectores a un Blog" toggleable="false">
+                <h:panelGrid columns="2">
+                    <h:outputLabel for="blog" value="Seleccionar Blog:" />
+                    <p:selectOneMenu id="blog" value="#{blogReaderBean.blogSeleccionado}">
+                        <f:selectItems value="#{blogReaderBean.listaBlog}" var="blog"
+                                       itemLabel="#{blog.title}" itemValue="#{blog.id}"/>
+                        <p:ajax update="readers" listener="#{blogReaderBean.actualizarLectores}" />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+
+                    <h:outputLabel for="readers" value="Seleccionar Lectores:" />
+                    <p:selectCheckboxMenu id="readers" value="#{blogReaderBean.readSeleccionado}" 
+                                          label="Lectores" converter="javax.faces.Integer">
+                        <f:selectItems value="#{blogReaderBean.listaReader}" var="reader"
+                                       itemLabel="#{reader.name}" itemValue="#{reader.id}" />
+                    </p:selectCheckboxMenu>
+                </h:panelGrid>
+                <p:commandButton value="Guardar" action="#{blogReaderBean.guardar()}" update="form"/>
+                <br/>
+                <br/>
+                <br/>
+                <p:dataTable value="#{blogReaderBean.blogs}" var="blog" paginator="true" rows="5"
+                             emptyMessage="Datos no encontrados" rowsPerPageTemplate="5,10,15,30,50" paginatorAlwaysVisible="true">
+                    <p:column>
+                        <f:facet name="header">Título</f:facet>
+                            #{blog.title}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Descripción</f:facet>
+                            #{blog.description}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Lectores Asociados</f:facet>
+                        <ul>
+                            <ui:repeat value="#{blogReaderBean.getReadersByBlogId(blog.id)}" var="reader">
+                                <li>#{reader.name}
+                                <h:commandLink value="Eliminar" action="#{blogReaderBean.eliminarLectorDeBlog(blog.id, reader.id)}" />
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                    </p:column>
+                </p:dataTable>
+
+            </p:fieldset>
+        </h:form>
+    </h:body>
+</html>

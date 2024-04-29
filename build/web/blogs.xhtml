@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+        <style>
+            .ui-widget-overlay {
+                display: none !important;
+            }
+
+            .ui-dialog {
+                z-index: 10000;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:growl id="msg" showDetail="true" life="4000" />
+            <p:fieldset legend="Blogs" toggleable="false">
+                <p:commandButton value="Agregar Blog" onclick="PF('dialogoAgregarBlog').show();" />
+                <br/>
+                <br/>
+                <p:dataTable value="#{blogBean.listaBlogs}" paginator="true" rows="5"
+                             emptyMessage="Datos no encontrados" rowsPerPageTemplate="5,10,15,30,50" paginatorAlwaysVisible="true" var="blog">
+                    <p:column headerText="ID" width="4%">
+                        <h:outputText value="#{blog.id}"/>
+                    </p:column>
+                    <p:column headerText="Titulo">
+                        <h:outputText value="#{blog.title}"/>
+                    </p:column>
+                    <p:column headerText="Descripción">
+                        <h:outputText value="#{blog.description}"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Editar" oncomplete="PF('dialogoEditarBlog').show();" update=":formEdit">
+                            <f:setPropertyActionListener target="#{blogBean.blog}" value="#{blog}" />
+                        </p:commandButton>
+                        <p:commandButton value="Eliminar" action="#{blogBean.eliminarBlog(blog)}" update=":form">
+                            <p:confirm header="Confirmación" message="¿Estas seguro?"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" />
+                </p:confirmDialog> 
+            </p:fieldset>
+
+
+        </h:form>
+        <h:form id="formAdd">
+            <p:dialog header="Agregar Blog" widgetVar="dialogoAgregarBlog" modal="true">
+                <h:panelGrid columns="2">
+                    <h:outputLabel for="title" value="Titulo:" />
+                    <p:inputText id="title" value="#{blogBean.blog.title}" />
+
+                    <h:outputLabel for="descripcion"  value="Descripción" />
+                    <p:inputTextarea id="descripcion" value="#{blogBean.blog.description}"/>
+                    <p:commandButton value="Agregar"  action="#{blogBean.crearBlog()}" update=":form" />
+                    <p:commandButton value="Cancelar" onclick="PF('dialogoAgregarBlog').hide();">
+
+                    </p:commandButton>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="formEdit">
+            <p:dialog header="Editar Blog" widgetVar="dialogoEditarBlog" modal="true">
+                <h:form id="formEdit">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel for="title" value="Titulo:" />
+                        <p:inputText id="title" value="#{blogBean.blog.title}" />
+
+                        <h:outputLabel for="descripcion"  value="Descripción" />
+                        <p:inputTextarea id="descripcion" value="#{blogBean.blog.description}"/>
+
+                        <p:commandButton value="Editar" action="#{blogBean.editarBlog()}" update=":form" oncomplete="PF('dialogoEditarBlog').hide();" />
+                        <p:commandButton value="Cancelar" onclick="PF('dialogoEditarBlog').hide();" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </h:form>
+
+    </h:body>
+</html>
